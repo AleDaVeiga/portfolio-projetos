@@ -12,8 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "pessoa")
@@ -26,12 +28,13 @@ public class Person implements Serializable {
 	private Long id;
 
 	@Column(name = "nome")
-	@NotBlank
+	@NotEmpty
 	@Size(max = 100)
 	private String name;
 
 	@Column(name = "datanascimento")
 	@Temporal(DATE)
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date birth;
 
 	@Column(name = "cpf")
@@ -59,5 +62,34 @@ public class Person implements Serializable {
 
 	public Boolean getEmployee() {
 		return employee;
+	}
+
+	// TODO: Remove
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void changeName(String name) {
+		this.name = name;
+	}
+
+	public void setBirth(Date birth) {
+		this.birth = birth;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+	public void setEmployee(Boolean employee) {
+		this.employee = employee;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Person) {
+			return ((Person) obj).getId().equals(getId());
+		}
+		return false;
 	}
 }

@@ -11,19 +11,9 @@ import com.empresa.projetos.model.entity.Project;
 import com.empresa.projetos.model.repository.ProjectRepository;
 
 @Service
-public class ProjectServiceImpl implements ProjectService {
+public class ProjectsServiceImpl implements ProjectsService {
 	@Autowired
 	private ProjectRepository projectRepository;
-
-	@Transactional(readOnly = true)
-	public List<Project> findAll() {
-		return projectRepository.findAll();
-	}
-
-	@Transactional(readOnly = true)
-	public Optional<Project> findById(Long id) {
-		return projectRepository.findById(id);
-	}
 	
 	@Transactional
 	public Project create(Project project) {
@@ -40,5 +30,15 @@ public class ProjectServiceImpl implements ProjectService {
 		if (projectRepository.existsById(id)) {
 			projectRepository.deleteById(id);
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public List<Project> findAll() {
+		return projectRepository.findAll();
+	}
+
+	@Transactional(readOnly = true)
+	public Optional<Project> findById(Long id) {
+		return projectRepository.findById(id);
 	}
 }

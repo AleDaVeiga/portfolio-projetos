@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -19,7 +20,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -34,7 +35,7 @@ public class Project implements Serializable {
 	private Long id;
 	
 	@Column(name = "nome")
-	@NotBlank
+	@NotEmpty
 	@Size(max = 200)
 	private String name;
 	
@@ -73,6 +74,10 @@ public class Project implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "membros", joinColumns = @JoinColumn(name = "idprojeto"), inverseJoinColumns = @JoinColumn(name = "idpessoa"))
 	private Set<Person> members;
+	
+	public Project() {
+		this.members = new HashSet<>();
+	}
 
 	public Long getId() {
 		return id;
@@ -116,5 +121,26 @@ public class Project implements Serializable {
 
 	public Set<Person> getMembers() {
 		return Collections.unmodifiableSet(members);
+	}
+
+	// TODO: Remove
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void changeName(String name) {
+		this.name = name;
+	}
+	
+	public void changeManager(Person manager) {
+		this.manager = manager;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Project) {
+			return ((Project) obj).getId().equals(getId());
+		}
+		return false;
 	}
 }
