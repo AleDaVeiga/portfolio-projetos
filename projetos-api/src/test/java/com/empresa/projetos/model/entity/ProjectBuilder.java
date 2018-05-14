@@ -3,13 +3,6 @@ package com.empresa.projetos.model.entity;
 public class ProjectBuilder {
 	private Long id;
 	private String name;
-//	private Date start;
-//	private Date scheduledEnd;
-//	private Date end;
-//	private String description;
-//	private String status;
-//	private BigDecimal budget;
-//	private String risk;
 	private Person manager;
 	
 	public Project build() {
