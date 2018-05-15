@@ -1,6 +1,7 @@
 package com.empresa.projetos.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.empresa.projetos.exception.NotAllowedException;
 import com.empresa.projetos.exception.NotFoundException;
 import com.empresa.projetos.model.entity.Project;
 import com.empresa.projetos.model.service.ProjectsService;
@@ -48,9 +50,11 @@ public class ProjectsController {
 	@DeleteMapping("/{id}")
 	@Transactional
 	public Project remove(@PathVariable(value = "id") Long id) {
-		Project projectRemoved = projectsService.findById(id).orElseThrow(() -> new NotFoundException("Project", "id", id));
+		Optional<Project> projectRemoved = projectsService.findById(id);
+		projectRemoved.orElseThrow(() -> new NotFoundException("Project", "id", id));
+		projectRemoved.filter(p -> p.isAllowedRemove()).orElseThrow(() -> new NotAllowedException("Project", "id", id));
 		projectsService.remove(id);
-		return projectRemoved;
+		return projectRemoved.get();
 	}
 
 	@GetMapping

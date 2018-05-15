@@ -132,6 +132,18 @@ public class ProjectsControllerTest {
 	}
 	
 	@Test
+	public void mustDenyToRemoveProject() throws Exception {
+		Long idToRemove = 22L;
+		Project mockProject = new ProjectBuilder().withId(idToRemove).withName("Projeto de portfolio").closed().build();
+		configMockFindByIdProject(idToRemove, mockProject);
+		
+		mock.perform(delete("/projects" + "/{id}", idToRemove))
+		.andExpect(status().is(BAD_REQUEST.value()));
+		
+		verify(projectsService).findById(idToRemove);
+	}
+	
+	@Test
 	public void mustFindAllProjects() throws Exception {
 		Project mockProject = new ProjectBuilder().withId(22L).withName("Projeto de portfolio").build();
 		List<Project> mockProjects = asList(mockProject);
