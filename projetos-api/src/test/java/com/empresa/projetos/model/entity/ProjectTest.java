@@ -10,6 +10,7 @@ import static com.empresa.projetos.model.entity.Status.UNDER_REVIEW;
 import static java.math.BigDecimal.TEN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
@@ -125,11 +126,22 @@ public class ProjectTest {
 	
 	@Test
 	public void mustChangeManager() {
-		Person manager = new PersonBuilder().withId(33L).withName("Alessandro").build();
+		Person manager = new PersonBuilder().withId(33L).withName("Alessandro").asManager().build();
 		
 		this.project.changeManager(manager);
 		
 		assertEquals(manager, this.project.getManager());
+	}
+	
+	@Test
+	public void mustNotChangeManagerAsEmployee() {
+		Person manager = new PersonBuilder().withId(33L).withName("Alessandro Manager").asManager().build();
+		Person employee = new PersonBuilder().withId(44L).withName("Alessandro Employee").build();
+		
+		this.project.changeManager(manager);
+		this.project.changeManager(employee);
+		
+		assertNotEquals(employee, this.project.getManager());
 	}
 	
 	@Test
@@ -156,5 +168,38 @@ public class ProjectTest {
 		this.project.changeStatus(CLOSED);
 		
 		assertFalse(this.project.isAllowedRemove());
+	}
+	
+	@Test
+	public void mustAddEmployee() {
+		Person employee = new PersonBuilder().withId(33L).withName("Alessandro").build();
+		
+		this.project.addEmployee(employee);
+		
+		assertTrue(this.project.getMembers().contains(employee));
+	}
+	
+	@Test
+	public void mustAddSomeEmployees() {
+		Person employeeOne = new PersonBuilder().withId(33L).withName("Alessandro One").build();
+		Person employeeTwo = new PersonBuilder().withId(44L).withName("Alessandro Two").build();
+		Person employeeThree = new PersonBuilder().withId(55L).withName("Alessandro Three").build();
+		
+		this.project.addEmployee(employeeOne);
+		this.project.addEmployee(employeeTwo);
+		this.project.addEmployee(employeeThree);
+		
+		assertTrue(this.project.getMembers().contains(employeeOne));
+		assertTrue(this.project.getMembers().contains(employeeTwo));
+		assertTrue(this.project.getMembers().contains(employeeThree));
+	}
+	
+	@Test
+	public void mustNotAddManagerAsEmployee() {
+		Person manager = new PersonBuilder().withId(33L).withName("Alessandro One").asManager().build();
+		
+		this.project.addEmployee(manager);
+		
+		assertFalse(this.project.getMembers().contains(manager));
 	}
 }

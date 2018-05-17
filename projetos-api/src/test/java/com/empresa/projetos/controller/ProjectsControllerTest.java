@@ -189,7 +189,7 @@ public class ProjectsControllerTest {
 	}
 	
 	private Person defaultManager() {
-		return new PersonBuilder().withId(22L).withName("Alessandro da Veiga").build();
+		return new PersonBuilder().withId(22L).withName("Alessandro da Veiga").asManager().build();
 	}
 
 	private String toObjectJSON(Object obj) throws JsonProcessingException {

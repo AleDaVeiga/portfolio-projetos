@@ -178,7 +178,9 @@ public class Project extends BaseEntity implements Serializable {
 	}
 
 	public void changeManager(Person manager) {
-		this.manager = manager;
+		if (!manager.isEmployee()) {
+			this.manager = manager;
+		}
 	}
 
 	public boolean isAllowedRemove() {
@@ -186,5 +188,11 @@ public class Project extends BaseEntity implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	public void addEmployee(Person employee) {
+		if (employee.isEmployee()) {
+			this.members.add(employee);
+		}
 	}
 }
