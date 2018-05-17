@@ -19,23 +19,6 @@ public class PeopleServiceImpl implements PeopleService {
 		this.personRepository = personRepository;
 	}
 
-	@Transactional
-	public Person create(Person person) {
-		return personRepository.save(person);
-	}
-
-	@Transactional
-	public Person update(Person person) {
-		return personRepository.save(person);
-	}
-
-	@Transactional
-	public void remove(Long id) {
-		if (personRepository.existsById(id)) {
-			personRepository.deleteById(id);
-		}
-	}
-
 	@Transactional(readOnly = true)
 	public List<Person> findAll() {
 		return personRepository.findAll();

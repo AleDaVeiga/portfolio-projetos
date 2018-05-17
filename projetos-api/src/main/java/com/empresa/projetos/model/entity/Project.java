@@ -34,7 +34,9 @@ import javax.validation.constraints.Size;
 
 import org.springframework.util.StringUtils;
 
+import com.empresa.projetos.model.entity.converter.RiskConverter;
 import com.empresa.projetos.model.entity.converter.StatusConverter;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "projeto")
@@ -48,14 +50,17 @@ public class Project extends BaseEntity implements Serializable {
 
 	@Column(name = "data_inicio")
 	@Temporal(DATE)
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date start;
 
 	@Column(name = "data_previsao_fim")
 	@Temporal(DATE)
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date scheduledEnd;
 
 	@Column(name = "data_fim")
 	@Temporal(DATE)
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date end;
 
 	@Column(name = "descricao")
@@ -70,6 +75,7 @@ public class Project extends BaseEntity implements Serializable {
 	private BigDecimal budget;
 
 	@Column(name = "risco")
+	@Convert(converter = RiskConverter.class)
 	private Risk risk;
 
 	@ManyToOne

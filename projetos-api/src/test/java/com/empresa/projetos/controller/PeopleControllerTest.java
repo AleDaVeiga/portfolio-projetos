@@ -1,17 +1,11 @@
 package com.empresa.projetos.controller;
 
-import static java.time.Month.JUNE;
 import static java.util.Arrays.asList;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,94 +36,6 @@ public class PeopleControllerTest {
 	@MockBean
 	private PeopleService peopleService;
 
-	@Test
-	public void mustCreatePerson() throws Exception {
-		Person mockPerson = new PersonBuilder().withId(22L).withName("Alessandro da Veiga").withBirth(1989, JUNE, 12).withCpf("185.689.865-28").asEmprolyee().build();
-		String mockPersonJSON = toObjectJSON(mockPerson);
-		configMockCreatePerson(mockPerson);
-
-		mock.perform(post("/people")
-									.contentType(APPLICATION_JSON_UTF8)
-									.accept(APPLICATION_JSON_UTF8)
-									.content(mockPersonJSON))
-		.andExpect(status().isOk())
-		.andExpect(content().json(mockPersonJSON));
-		
-		verify(peopleService).create(any(Person.class));
-	}
-	
-	@Test
-	public void mustFailOnCreatePerson() throws Exception {
-		Person mockPerson = new PersonBuilder().withId(22L).withName(null).build();
-		String mockPersonJSON = toObjectJSON(mockPerson);
-
-		mock.perform(post("/people")
-									.contentType(APPLICATION_JSON_UTF8)
-									.accept(APPLICATION_JSON_UTF8)
-									.content(mockPersonJSON))
-		.andExpect(status().is(BAD_REQUEST.value()));
-	}
-
-	@Test
-	public void mustUpdatePerson() throws Exception {
-		Long idToUpdate = 22L;
-		Person mockPersonOld = new PersonBuilder().withId(idToUpdate).withName("Alessandro da Veiga").build();
-		Person mockPersonChanged = new PersonBuilder().withId(idToUpdate).withName("Alessandro da Veiga").withBirth(1989, JUNE, 12).withCpf("185.689.865-28").asEmprolyee().build();
-		configMockFindByIdPerson(idToUpdate, mockPersonOld);
-		configMockUpdatePerson(mockPersonChanged);
-
-		mock.perform(put("/people" + "/{id}", idToUpdate)
-														.contentType(APPLICATION_JSON_UTF8)
-														.accept(APPLICATION_JSON_UTF8)
-														.content(toObjectJSON(mockPersonOld)))
-		.andExpect(status().isOk())
-		.andExpect(content().json(toObjectJSON(mockPersonChanged)));
-		
-		verify(peopleService).findById(idToUpdate);
-		verify(peopleService).update(mockPersonChanged);
-	}
-	
-	@Test
-	public void mustFailOnUpdatePerson() throws Exception {
-		Long idToUpdate = 22L;
-		Person mockPerson = new PersonBuilder().withId(idToUpdate).withName("Alessandro da Veiga").withBirth(1989, JUNE, 12).withCpf("185.689.865-28").asEmprolyee().build();
-		String mockPersonJSON = toObjectJSON(mockPerson);
-		configMockFindByIdPerson(idToUpdate, null);
-
-		mock.perform(put("/people" + "/{id}", idToUpdate)
-														.contentType(APPLICATION_JSON_UTF8)
-														.accept(APPLICATION_JSON_UTF8)
-														.content(mockPersonJSON))
-		.andExpect(status().is(NOT_FOUND.value()));
-		
-		verify(peopleService).findById(idToUpdate);
-	}
-	
-	@Test
-	public void mustRemovePerson() throws Exception {
-		Long idToRemove = 22L;
-		Person mockPerson = new PersonBuilder().withId(idToRemove).withName("Alessandro da Veiga").build();
-		String mockPersonJSON = toObjectJSON(mockPerson);
-		configMockFindByIdPerson(idToRemove, mockPerson);
-		
-		mock.perform(delete("/people" + "/{id}", idToRemove))
-		.andExpect(status().isOk())
-		.andExpect(content().json(mockPersonJSON));
-		
-		verify(peopleService).findById(idToRemove);
-	}
-	
-	@Test
-	public void mustFailOnRemovePerson() throws Exception {
-		Long idToRemove = 22L;
-		configMockFindByIdPerson(idToRemove, null);
-		
-		mock.perform(delete("/people" + "/{id}", idToRemove))
-		.andExpect(status().is(NOT_FOUND.value()));
-		
-		verify(peopleService).findById(idToRemove);
-	}
-	
 	@Test
 	public void mustFindAllPeople() throws Exception {
 		Person mockPerson = new PersonBuilder().withId(22L).withName("Alessandro da Veiga").build();
@@ -178,14 +84,6 @@ public class PeopleControllerTest {
 	private String toObjectJSON(Object obj) throws JsonProcessingException {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		return ow.writeValueAsString(obj);
-	}
-
-	private void configMockCreatePerson(Person person) {
-		when(peopleService.create(any(Person.class))).thenReturn(person);
-	}
-
-	private void configMockUpdatePerson(Person person) {
-		when(peopleService.update(person)).thenReturn(person);
 	}
 
 	private void configMockFindByIdPerson(Long id, Person person) {
